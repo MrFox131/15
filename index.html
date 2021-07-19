@@ -132,8 +132,8 @@
     }
 
     function checkForWin() {
-      for (let i = 0; i < cells_elems.length - 1; i++) {
-        if (Number(cells_elems[i].id) + 1 != Number(cells_elems[i].innerText)) {
+      for (let i = 0; i < cells.length - 1; i++) {
+        if (i+1 != cells[i]) {
           return false
         }
       }
@@ -170,14 +170,17 @@
             cells_elems[id].innerText = ""
             cells_elems[place_id].style.opacity = 1
             cells_elems[id].style.opacity = 1
+            setTimeout(()=>{
+              if (checkForWin()) {
+                alert('You win!')
+
+                restart()
+              }
+            }, 210)
           }, 210)
         }
       });
-      if (checkForWin()) {
-        alert('You win!')
 
-        restart()
-      }
     }
     for (let i = 0; i < cells_elems.length; i++) {
       cells_elems[i].addEventListener('click', cellClick)
