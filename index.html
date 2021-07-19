@@ -1,50 +1,69 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>KinderGarden</title>
-    <style>
-      .row {
-        display: flex;
-      }
-      .cell {
-        width: 50px;
-        height: 50px;
-        line-height: 50px;
-        text-align:center;
-        margin: 4px 0 0 4px;
-        border-radius: 3px;
-        background-color: antiquewhite;
-        cursor: pointer;
-        user-select: none;
-        transition: all 0.2s;
-      }
-      button {
-        margin-top: 5px;
-        border-radius: 0;
-        border: none;
-        width:150px;
-        height: 40px;
-        margin-left:4px;
-        background-color: lightgray;
-        transition: all 0.3s
-      }
-      button:hover {
-        margin-top: 5px;
-        border-radius: 0;
-        border: none;
-        width:150px;
-        height: 40px;
-        margin-left:4px;
-        background-color: lightgray;
-        transform: scale(0.95)
-      }
-      button:active{
-        transform: scale(0.9)
-      }
-    </style>
-  </head>
-  <body>
+
+<head>
+  <meta charset="utf-8">
+  <title>KinderGarden</title>
+  <style>
+    .row {
+      display: flex;
+    }
+
+    .cell {
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      margin: 4px 0 0 4px;
+      border-radius: 3px;
+      background-color: antiquewhite;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+    }
+
+    button {
+      margin-top: 5px;
+      border-radius: 0;
+      border: none;
+      width: 150px;
+      height: 40px;
+      margin-left: 4px;
+      background-color: lightgray;
+      transition: all 0.3s
+    }
+
+    button:hover {
+      margin-top: 5px;
+      border-radius: 0;
+      border: none;
+      width: 150px;
+      height: 40px;
+      margin-left: 4px;
+      background-color: lightgray;
+      transform: scale(0.95)
+    }
+
+    button:active {
+      transform: scale(0.9)
+    }
+    #game{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
     <div id="game">
       <div class="row">
         <div id="0" class="cell">1</div>
@@ -70,100 +89,108 @@
         <div id="14" class="cell">1</div>
         <div id="15" class="cell"></div>
       </div>
+      <button id="reset" type="button" name="button">Reset</button>
     </div>
-    <button id="reset" type="button" name="button">Reset</button>
-    <script type="text/javascript">
-      const field = document.getElementById('game');
-      console.log(field);
-      var cells = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0]
-      var cells_elems = document.getElementsByClassName('cell')
-      function solvable() {
-        let inversions = 0
-        for(let i = 0; i<cells.length; i++ ){
-          for (let j=i+1; j<cells.length; j++){
-            if (cells[i]>cells[j])
-              inversions++
-          }
-        }
-        return inversions%2==0
-      }
-      function shuffle() {
-        cells = cells.filter((value)=>value!=0)
-        do {
-          cells = cells
-            .map(a => [Math.random(), a])
-            .sort((a, b) => a[0] - b[0])
-            .map(a => a[1]);
-        } while(!solvable())
-        cells.push(0)
-      }
-      function fullfill(){
-        for(var i = 0; i<cells_elems.length; i++){
-          if (cells[Number(cells_elems[i].id)] != 0)
-            cells_elems[i].innerText = cells[Number(cells_elems[i].id)]
-          else {
-            cells_elems[i].innerText = ""
-          }
-        }
-      }
-      function checkForWin() {
-        for(let i =0; i<cells_elems.length-1; i++){
-          if (Number(cells_elems[i].id)+1 != Number(cells_elems[i].innerText)){
-            return false
-          }
-        }
-        return true
-      }
 
-      function cellClick(){
-        let id = Number(this.getAttribute('id'))
-        if (cells[id] == 0) {
-          console.log("Do not touch this button")
-          return
-        }
-        let usable = []
-        if (Math.floor((id-1)/4) == Math.floor(id/4)){
-          usable.push(id-1)
-        }
-        if (Math.floor((id+1)/4) == Math.floor(id/4)){
-          usable.push(id+1)
-        }
-        if (id-4 >= 0) {
-          usable.push(id-4)
-        }
-        if (id+4 < 16) {
-          usable.push(id+4)
-        }
-        usable.forEach((place_id) => {
-          if (cells[place_id] == 0 ){
-            cells[place_id] = cells[id]
-            cells[id] = 0
-            cells_elems[place_id].style.opacity = 0
-            cells_elems[id].style.opacity = 0
-            setTimeout(()=>{
-              cells_elems[place_id].innerText = cells[place_id]
-              cells_elems[id].innerText = ""
-              cells_elems[place_id].style.opacity = 1
-              cells_elems[id].style.opacity = 1
-            }, 210)
-          }
-        });
-        if(checkForWin()){
-          alert('You win!')
+  </div>
+  <script type="text/javascript">
+    const field = document.getElementById('game');
+    console.log(field);
+    var cells = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]
+    var cells_elems = document.getElementsByClassName('cell')
 
-          restart()
+    function solvable() {
+      let inversions = 0
+      for (let i = 0; i < cells.length; i++) {
+        for (let j = i + 1; j < cells.length; j++) {
+          if (cells[i] > cells[j])
+            inversions++
         }
       }
-      for(let i = 0; i<cells_elems.length; i++){
-        cells_elems[i].addEventListener('click', cellClick)
+      return inversions % 2 == 0
+    }
+
+    function shuffle() {
+      cells = cells.filter((value) => value != 0)
+      do {
+        cells = cells
+          .map(a => [Math.random(), a])
+          .sort((a, b) => a[0] - b[0])
+          .map(a => a[1]);
+      } while (!solvable())
+      cells.push(0)
+    }
+
+    function fullfill() {
+      for (var i = 0; i < cells_elems.length; i++) {
+        if (cells[Number(cells_elems[i].id)] != 0)
+          cells_elems[i].innerText = cells[Number(cells_elems[i].id)]
+        else {
+          cells_elems[i].innerText = ""
+        }
       }
+    }
+
+    function checkForWin() {
+      for (let i = 0; i < cells_elems.length - 1; i++) {
+        if (Number(cells_elems[i].id) + 1 != Number(cells_elems[i].innerText)) {
+          return false
+        }
+      }
+      return true
+    }
+
+    function cellClick() {
+      let id = Number(this.getAttribute('id'))
+      if (cells[id] == 0) {
+        console.log("Do not touch this button")
+        return
+      }
+      let usable = []
+      if (Math.floor((id - 1) / 4) == Math.floor(id / 4)) {
+        usable.push(id - 1)
+      }
+      if (Math.floor((id + 1) / 4) == Math.floor(id / 4)) {
+        usable.push(id + 1)
+      }
+      if (id - 4 >= 0) {
+        usable.push(id - 4)
+      }
+      if (id + 4 < 16) {
+        usable.push(id + 4)
+      }
+      usable.forEach((place_id) => {
+        if (cells[place_id] == 0) {
+          cells[place_id] = cells[id]
+          cells[id] = 0
+          cells_elems[place_id].style.opacity = 0
+          cells_elems[id].style.opacity = 0
+          setTimeout(() => {
+            cells_elems[place_id].innerText = cells[place_id]
+            cells_elems[id].innerText = ""
+            cells_elems[place_id].style.opacity = 1
+            cells_elems[id].style.opacity = 1
+          }, 210)
+        }
+      });
+      if (checkForWin()) {
+        alert('You win!')
+
+        restart()
+      }
+    }
+    for (let i = 0; i < cells_elems.length; i++) {
+      cells_elems[i].addEventListener('click', cellClick)
+    }
+    shuffle()
+    fullfill()
+
+    function restart() {
       shuffle()
       fullfill()
-      function restart(){
-        shuffle()
-        fullfill()
-      }
-      document.getElementById('reset').addEventListener('click', restart)
-    </script>
-  </body>
+    }
+    document.getElementById('reset').addEventListener('click', restart)
+  </script>
+</body>
+
 </html>
